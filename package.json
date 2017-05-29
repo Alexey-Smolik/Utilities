@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/Leshutic/Utilities/issues"
   },
-  "homepage": "https://github.com/Leshutic/Utilities#readme"
+  "homepage": "https://github.com/Leshutic/Utilities#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.2",
+    "card-validator": "^4.1.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
+    "mysql": "^2.13.0",
+    "sequelize": "^3.30.4"
+  }
 }
