@@ -1,0 +1,73 @@
+<html>
+<head>
+
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<link rel="stylesheet" href="bootstrap.min.css">
+	<script src="jquery.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<script src="packaged.min.js"></script>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+	<script>
+        function userLogin() {
+            $.ajax({
+                url: "/api/session/login",
+                type: 'POST',
+                data: {
+                    email: document.getElementById("email").value,
+                    password: $("#password").val()
+                },
+                success: function(data){
+                    localStorage.setItem('userId', data.id);
+                    localStorage.setItem('role', data.role);
+                    if(data.role === 2)
+                    	location.href="/statistics.html";
+                    else if(data.role === 1)
+                        location.href="/admin.html";
+                },
+                error: function(err) {
+                    noty({
+                        text: JSON.parse(err.responseText).message,
+                        layout: 'topRight',
+                        closeWith: ['click', 'hover'],
+                        type: 'error',
+                        timeout: 1000
+                    });
+                }
+            });
+            return false;
+        }
+	</script>
+	<form onsubmit="return userLogin()">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+					<div class="form-background">
+						<h1>Вход</h1>
+						<hr class="colorgraph">
+							<div class="form-group">
+								<input type="email" name="email" id="email" required="required" class="form-control input-lg" placeholder="Email" tabindex="4">
+							</div>
+							<div class="form-group">
+								<input type="password" name="password" id="password" required="required" class="form-control input-lg" placeholder="Пароль" tabindex="5">
+							</div>
+						<hr class="colorgraph">
+						<div class="row">
+							<div class="col-xs-12 col-md-6">
+                                <input type="button" value="Регистрация" class="btn btn-primary btn-block btn-lg" tabindex="7" onclick="location.href= 'registration.html'"></div>
+							<div class="col-xs-12 col-md-6">
+                                <input type="submit" value="Войти" class="btn btn-success btn-block btn-lg" tabindex="7">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+</html>
+
+
+

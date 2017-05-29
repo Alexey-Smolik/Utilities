@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="statistics.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-table.min.css">
+    <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="jquery.dataTables.min.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+        <a href="profile.html" id="userName" class="navbar-brand"></a>
+        <div class="collapse navbar-collapse navHeaderCollapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="statistics.html">Платежи</a></li>
+                <li class="active"><a href="javascript:window.location.href=window.location.href">Статистика</a></li>
+                <li><a href="profile.html">Профиль</a></li>
+                <li><a href="auth.html">Выйти</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="table-data">
+    <table id="table" data-show-footer="false">
+        <thead>
+        <tr>
+            <th data-field="id">Id</th>
+            <th data-field="UtilityName">UtilityName</th>
+            <th data-field="Amount">Amount</th>
+            <th data-field="Date" class="col-lg-4 col-lg-offset-2">Date</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function(){
+        var id, role, query, table, user, payStatistics;
+
+        role = localStorage.getItem('role');
+        if(role == "2")
+            query = "/api/payStatistic/" + localStorage.getItem('userId');
+        else
+            query = "/api/payStatistic/";
+
+        $.get(
+            query,
+            {
+            },
+            function (result) {
+                payStatistics = result.map(item => item.payStatistics);
+                $('#table').bootstrapTable({
+                    data: payStatistics
+                });
+
+                user = result.map(item => item.user);
+                $('#userName').html(user[0].Name + " " + user[0].Surname);
+
+                table = $('#table').DataTable({
+                    "order": [[ 0, "desc" ]]
+                } );
+
+            });
+
+        $('#table').on('click', 'tr', function () {
+            if($(this).hasClass('active')){
+                $(this).removeClass('active');
+            } else {
+                $(this).addClass('active').siblings().removeClass('active');
+            }
+        } );
+    });
+</script>
+</body>
+</html>

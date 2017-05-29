@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<head>
+    <title>U | Statistics</title>
+    <link rel="stylesheet" href="statistics.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <link rel="stylesheet" href="bootstrap-table.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="jquery.dataTables.min.js"></script>
+    <script src="packaged.min.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+        <a href="profile.html" id="userName" class="navbar-brand">Администратор</a>
+        <div class="collapse navbar-collapse navHeaderCollapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="admin.html">Услуги</a></li>
+                <li class="active"><a href="javascript:window.location.href=window.location.href">Пользователи</a></li>
+                <li><a href="adminStatistics.html">Статистика</a></li>
+                <li><a href="auth.html">Выйти</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!-- -------------------Modal_ROLE------------------------>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Изменить роль пользователя</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="roleText" value="Пользователь" class="form-control input-lg" readonly><br>
+                <input type="text" id="roleType" value="2" class="form-control input-lg" readonly><br>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Роль
+                        <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-header">Администратор</li>
+                        <li><a id="admin">1</a></li>
+                        <li class="dropdown-header">Пользователь</li>
+                        <li><a id="user">2</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="roleButton" class="btn btn-success">Изменить</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Назад</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- -------------------Modal_UPDATE------------------------>
+<div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Изменить пользователя</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="firstName" placeholder="Имя пользователя" required class="form-control input-lg"><br>
+                <input type="text" id="lastName" placeholder="Фамилия пользователя" required="required" class="form-control input-lg"><br>
+                <input type="email" name="email" id="email" required class="form-control input-lg" placeholder="Email">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="updateButton" class="btn btn-success">Изменить</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Назад</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="toolbar">
+    <button id="remove" class="btn btn-danger" disabled>
+        <span class="glyphicon glyphicon-remove"></span> Удалить
+    </button>
+    <button id="edit" class="btn btn-primary" data-toggle="modal" data-target="#myModal2" disabled>
+        <span class="glyphicon glyphicon-pencil"></span> Изменить пользователя
+    </button>
+    <button id="role" class="btn btn-info" data-toggle="modal" data-target="#myModal" disabled>
+        <span class="glyphicon glyphicon-hand-up"></span> Изменить роль
+    </button>
+</div>
+
+<div class="table-data">
+    <table id="table"
+           data-toolbar="#toolbar"
+           data-id-field="id"
+           data-show-footer="false">
+        <thead>
+        <tr>
+            <th data-field="id">Id</th>
+            <th data-field="firstName">First name</th>
+            <th data-field="lastName">Last name</th>
+            <th data-field="email">Email</th>
+            <th data-field="role">Role</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $.get(
+            "/api/users/",
+            {
+            },
+            function (result) {
+                $('#table').bootstrapTable({
+                    data: result
+                });
+
+                table = $('#table').DataTable();
+            });
+    });
+
+    $('#remove').click( function () {
+        $.ajax({
+            url: "/api/users/" + table.rows('.active').data()[0][0],
+            type: 'DELETE',
+            data: { },
+            success: function(data){
+                noty({
+                    text: 'пользоваетель успешно удалён',
+                    layout: 'topRight',
+                    closeWith: ['click', 'hover'],
+                    type: 'success',
+                    timeout: 1000
+                });
+                setTimeout(function(){ location.reload(); }, 1001);
+            },
+            error: function(err) {
+                noty({
+                    text: JSON.parse(err.responseText).message,
+                    layout: 'topRight',
+                    closeWith: ['click', 'hover'],
+                    type: 'error',
+                    timeout: 1000
+                });
+            }
+        });
+    });
+
+    $('#table').on('click', 'tr', function () {
+        if($(this).hasClass('active')){
+            $(this).removeClass('active');
+            $('#remove').prop('disabled', true);
+            $('#edit').prop('disabled', true);
+            $('#role').prop('disabled', true);
+        } else {
+            $(this).addClass('active').siblings().removeClass('active');
+            $('#remove').prop('disabled', false);
+            $('#edit').prop('disabled', false);
+            $('#role').prop('disabled', false);
+        }
+    });
+
+
+    $('#myModal2').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+
+
+    $('#edit').click(function (){
+        $('#firstName').val(table.rows('.active').data()[0][1]);
+        $('#lastName').val(table.rows('.active').data()[0][2]);
+        $('#email').val(table.rows('.active').data()[0][3]);
+    });
+
+    $('#utilityName2').keyup(function() {
+        $('#updateButton').prop('disabled', false);
+        if (!this.value) {
+            $('#updateButton').prop('disabled', true);
+        }
+    });
+
+    $('#updateButton').click(function () {
+        if(!$('#firstName').val() || !$('#lastName').val() || !$('#email').val()){
+            noty({
+                text: 'вы пропустили поле',
+                layout: 'topRight',
+                closeWith: ['click', 'hover'],
+                type: 'error',
+                timeout: 1000
+            });
+        }
+        else{
+            $.ajax({
+                url: "/api/users/" + table.rows('.active').data()[0][0],
+                type: 'PUT',
+                data: {
+                    name: $("#firstName").val(),
+                    surname: $("#lastName").val(),
+                    email: $("#email").val()
+                },
+                success: function(data){
+                    noty({
+                        text: 'услуга успешно изменена',
+                        layout: 'topRight',
+                        closeWith: ['click', 'hover'],
+                        type: 'success',
+                        timeout: 1000
+                    });
+                },
+                error: function(err) {
+                    noty({
+                        text: JSON.parse(err.responseText).message,
+                        layout: 'topRight',
+                        closeWith: ['click', 'hover'],
+                        type: 'error',
+                        timeout: 1000
+                    });
+                }
+            });
+        }
+    });
+
+
+
+    //---------ROLE---------
+    $('#myModal').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+
+
+    $('#role').click(function (){
+        var role = table.rows('.active').data()[0][4];
+        if(role == 1){
+            $('#roleText').val('Администратор');
+            $('#roleType').val('1');
+        }
+        $('#userRole').val(table.rows('.active').data()[0][4]);
+    });
+
+
+    $('#admin').click(function (){
+        $('#roleText').val('Администратор');
+        $('#roleType').val('1');
+    });
+
+    $('#user').click(function (){
+        $('#roleText').val('Пользователь');
+        $('#roleType').val('2');
+    });
+
+
+    $('#roleButton').click(function () {
+        $.ajax({
+            url: "/api/users/" + table.rows('.active').data()[0][0],
+            type: 'POST',
+            data: {
+                role: $("#roleType").val()
+            },
+            success: function(data){
+                noty({
+                    text: 'Роль успешно изменена',
+                    layout: 'topRight',
+                    closeWith: ['click', 'hover'],
+                    type: 'success',
+                    timeout: 1000
+                });
+            },
+            error: function(err) {
+                noty({
+                    text: JSON.parse(err.responseText).message,
+                    layout: 'topRight',
+                    closeWith: ['click', 'hover'],
+                    type: 'error',
+                    timeout: 1000
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

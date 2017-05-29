@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+    <title>U | Statistics</title>
+    <link rel="stylesheet" href="statistics.css">
+
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-table.min.css">
+    <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="jquery.dataTables.min.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+            <a href="profile.html" id="userName" class="navbar-brand"></a>
+        <div class="collapse navbar-collapse navHeaderCollapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="javascript:window.location.href=window.location.href">Платежи</a></li>
+                <li><a href="payStatistics.html">Статистика</a></li>
+                <li><a href="profile.html">Профиль</a></li>
+                <li><a href="auth.html">Выйти</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+   <div id="toolbar">
+       <button id="remove" class="btn btn-primary" disabled>
+           Оплатить
+       </button>
+   </div>
+
+   <div class="table-data">
+       <table id="table"
+              data-toolbar="#toolbar"
+              data-id-field="id"
+              data-show-footer="false">
+           <thead>
+           <tr>
+               <th data-field="id">Id</th>
+               <th data-field="utility">Utility name</th>
+               <th data-field="arrear">Arrear</th>
+               <th data-field="lastPayment" class="col-lg-5 col-lg-offset-2">Last payment</th>
+           </tr>
+           </thead>
+       </table>
+   </div>
+
+   <script>
+       $(document).ready(function(){
+           var id, role, query, table, statistics, user;
+           role = localStorage.getItem('role');
+           if(role == '2')
+               query = "/api/statistics/" + localStorage.getItem('userId');
+           else
+               query = "/api/statistics/";
+
+           $.get(
+               query,
+               {
+               },
+               function (result) {
+                   statistics = result.map(item => item.statistics);
+                   $('#table').bootstrapTable({
+                       data: statistics
+                   });
+
+                   user = result.map(item => item.user);
+                   $('#userName').html(user[0].userName + " " + user[0].userSurname);
+
+                   table = $('#table').DataTable();
+               });
+
+
+           $('#remove').click( function () {
+               localStorage.setItem('utilityId', table.rows('.active').data()[0][0]);
+               localStorage.setItem('utilityName', table.rows('.active').data()[0][1]);
+               localStorage.setItem('arrear', table.rows('.active').data()[0][2]);
+               location.href="/payment.html";
+           } );
+
+           $('#table').on('click', 'tr', function () {
+               if($(this).hasClass('active')){
+                   $(this).removeClass('active');
+                   $('#remove').prop('disabled', true);
+               } else {
+                   $(this).addClass('active').siblings().removeClass('active');
+                   $('#remove').prop('disabled', false);
+               }
+           });
+       });
+   </script>
+</body>
+</html>

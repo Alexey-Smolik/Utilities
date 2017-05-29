@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="jquery.min.js"></script>
+    <script src="packaged.min.js"></script>
+</head>
+<body>
+<form onsubmit="return pay()">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                <div class="form-background">
+                    <h2>Оплата</h2>
+                    <hr class="colorgraph">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <h3>Услуга</h3>
+                                <input type="text" name="utilityName" id="utilityName" class="form-control input-lg" placeholder="Услуга" tabindex="1" readonly>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <h3>Задолженность</h3>
+                                <input type="text" name="arrear" id="arrear" class="form-control input-lg" placeholder="Задолженность" tabindex="2" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="card" id="card" required="required" class="form-control input-lg" placeholder="Номер карты" tabindex="4">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <input type="text" name="amount" id="amount" required="required" class="form-control input-lg" placeholder="Сумма оплаты" tabindex="5">
+                        </div>
+                    </div>
+                    <hr class="colorgraph">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <input type="button" value="Назад" class="btn btn-primary btn-block btn-lg" tabindex="7" onclick="goBack();">
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <input type="submit" value="Оплатить" class="btn btn-success btn-block btn-lg" tabindex="7">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $("#arrear").val(localStorage.getItem('arrear'));
+        $("#utilityName").val(localStorage.getItem('utilityName'));
+    });
+
+    function goBack() {
+        localStorage.removeItem('arrear');
+        localStorage.removeItem('utilityName');
+        localStorage.removeItem('utilityId');
+        location.href = document.referrer;
+    }
+
+    function pay() {
+        $.ajax({
+            url: "/api/payments/" + localStorage.getItem('utilityId'),
+            type: 'PUT',
+            data: {
+                amount: $("#amount").val(),
+                cardNumber: $("#card").val()
+            },
+            success: function(data){
+                noty({
+                 text: 'Оплата успешно произведена!',
+                 layout: 'topRight',
+                 closeWith: ['click', 'hover'],
+                 type: 'success',
+                 timeout: 1000
+                 });
+            },
+            error: function(err) {
+                 noty({
+                 text: JSON.parse(err.responseText).message,
+                 layout: 'topRight',
+                 closeWith: ['click', 'hover'],
+                 type: 'error',
+                 timeout: 1000
+                 });
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

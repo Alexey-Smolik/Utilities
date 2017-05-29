@@ -1,0 +1,11 @@
+{
+  "db": {
+    "driver": "mysql",
+    "username": "root",
+    "password": "",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dbname": "utilities"
+  },
+  "secret_key": "superSecret"
+}
