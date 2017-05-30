@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8">
-    <title>U | Utilities</title>
+    <title>U | Admin utilities</title>
     <link rel="stylesheet" href="statistics.css">
     <link rel="stylesheet" href="bootstrap-table.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="all.min.css" />
     <script src="jquery.min.js"></script>
     <script src="bootstrap.min.js"></script>
     <script src="bootstrap-table.min.js"></script>
     <script src="jquery.dataTables.min.js"></script>
     <script src="packaged.min.js"></script>
+    <script src="shieldui-all.min.js"></script>
+    <script src="jszip.min.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-static-top">
@@ -81,9 +84,10 @@
     <button id="add" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
         <span class="glyphicon glyphicon-plus"></span> Добавить услугу
     </button>
+    <button id="exportButton" class="btn btn btn-success clearfix">
+        <span class="glyphicon glyphicon-export"></span> Export to Excel
+    </button>
 </div>
-
-
 
 <div class="table-data">
     <table id="table"
@@ -93,7 +97,7 @@
         <thead>
         <tr>
             <th data-field="id">Id</th>
-            <th data-field="name">Utility name</th>
+            <th data-field="name">UtilityName</th>
         </tr>
         </thead>
     </table>
@@ -237,6 +241,61 @@
     $('#myModal2').on('hidden.bs.modal', function () {
         location.reload();
     });
+
+    $("#exportButton").click(function () {
+        // parse the HTML table element having an id=exportTable
+        var dataSource = shield.DataSource.create({
+            data: "#table",
+            schema: {
+                type: "table",
+                fields: {
+                    Id: { type: Number },
+                    UtilityName: { type: String }
+                }
+            }
+        });
+        // when parsing is done, export the data to Excel
+        dataSource.read().then(function (data) {
+            new shield.exp.OOXMLWorkbook({
+                author: "PrepBootstrap",
+                worksheets: [
+                    {
+                        name: "PrepBootstrap Table",
+                        rows: [
+                            {
+                                cells: [
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: Number,
+                                        value: "Id"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "UtilityName"
+                                    }
+                                ]
+                            }
+                        ].concat($.map(data, function(item) {
+                            return {
+                                cells: [
+                                    { type: Number, value: item.Id },
+                                    { type: String, value: item.UtilityName },
+                                ]
+                            };
+                        }))
+                    }
+                ]
+            }).saveAs({
+                fileName: "PrepBootstrapExcel"
+            });
+        });
+    });
+
 </script>
 </body>
 </html>

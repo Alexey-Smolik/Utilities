@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <head>
+    <title>U | User payment statistics</title>
     <link rel="stylesheet" href="statistics.css">
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap-table.min.css">
     <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="jquery.min.js"></script>
     <script src="bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="jquery.dataTables.min.js"></script>
+    <script src="jquery.dataTables.min.js"></script>
+    <script src="shieldui-all.min.js"></script>
+    <script src="jszip.min.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-static-top">
@@ -22,8 +26,18 @@
         </div>
     </div>
 </div>
+
+<div id="toolbar">
+    <button id="exportButton" class="btn btn btn-success clearfix">
+        <span class="glyphicon glyphicon-export"></span> Export to Excel
+    </button>
+</div>
+
 <div class="table-data">
-    <table id="table" data-show-footer="false">
+    <table id="table"
+           data-toolbar="#toolbar"
+           data-id-field="id"
+           data-show-footer="false">
         <thead>
         <tr>
             <th data-field="id">Id</th>
@@ -72,6 +86,79 @@
             }
         } );
     });
+
+    $("#exportButton").click(function () {
+        // parse the HTML table element having an id=exportTable
+        var dataSource = shield.DataSource.create({
+            data: "#table",
+            schema: {
+                type: "table",
+                fields: {
+                    Id: { type: Number },
+                    UtilityName: { type: String },
+                    Amount: { type: Number },
+                    Date: { type: String }
+                }
+            }
+        });
+        // when parsing is done, export the data to Excel
+        dataSource.read().then(function (data) {
+            new shield.exp.OOXMLWorkbook({
+                author: "User",
+                worksheets: [
+                    {
+                        name: "PrepBootstrap Table",
+                        rows: [
+                            {
+                                cells: [
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: Number,
+                                        value: "Id"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "UtilityName"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: Number,
+                                        value: "Amount"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "Date"
+                                    }
+                                ]
+                            }
+                        ].concat($.map(data, function(item) {
+                            return {
+                                cells: [
+                                    { type: Number, value: item.Id },
+                                    { type: String, value: item.UtilityName },
+                                    { type: Number, value: item.Amount },
+                                    { type: String, value: item.Date }
+                                ]
+                            };
+                        }))
+                    }
+                ]
+            }).saveAs({
+                fileName: "PayStatistic"
+            });
+        });
+    });
+
 </script>
 </body>
 </html>

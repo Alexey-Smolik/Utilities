@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
-    <title>U | Statistics</title>
+    <meta charset="utf-8">
+    <title>U | Admin statistics</title>
     <link rel="stylesheet" href="statistics.css">
     <link rel="stylesheet" href="jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
@@ -10,6 +11,8 @@
     <script src="bootstrap-table.min.js"></script>
     <script src="jquery.dataTables.min.js"></script>
     <script src="packaged.min.js"></script>
+    <script src="shieldui-all.min.js"></script>
+    <script src="jszip.min.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-static-top">
@@ -82,6 +85,9 @@
     <button id="add" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
         <span class="glyphicon glyphicon-plus"></span> Добавить платёж пользователю
     </button>
+    <button id="exportButton" class="btn btn btn-success clearfix">
+        <span class="glyphicon glyphicon-export"></span> Export to Excel
+    </button>
 </div>
 
 
@@ -96,9 +102,9 @@
             <th data-field="id">Id</th>
             <th data-field="Name">Name</th>
             <th data-field="Surname">Surname</th>
-            <th data-field="utility">Utility name</th>
+            <th data-field="utility">UtilityName</th>
             <th data-field="arrear">Arrear</th>
-            <th data-field="lastPayment">Last payment</th>
+            <th data-field="lastPayment">LastPayment</th>
         </tr>
         </thead>
     </table>
@@ -257,6 +263,98 @@
     $('#myModal2').on('hidden.bs.modal', function () {
         location.reload();
     });
+
+    $("#exportButton").click(function () {
+        // parse the HTML table element having an id=exportTable
+        var dataSource = shield.DataSource.create({
+            data: "#table",
+            schema: {
+                type: "table",
+                fields: {
+                    Id: { type: Number },
+                    Name: { type: String },
+                    Surname: { type: String },
+                    UtilityName: { type: String },
+                    Arrear: { type: Number },
+                    LastPayment: { type: String }
+                }
+            }
+        });
+        // when parsing is done, export the data to Excel
+        dataSource.read().then(function (data) {
+            new shield.exp.OOXMLWorkbook({
+                author: "PrepBootstrap",
+                worksheets: [
+                    {
+                        name: "PrepBootstrap Table",
+                        rows: [
+                            {
+                                cells: [
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: Number,
+                                        value: "Id"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "Name"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "Surname"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "UtilityName"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: Number,
+                                        value: "Arrear"
+                                    },
+                                    {
+                                        style: {
+                                            bold: true
+                                        },
+                                        type: String,
+                                        value: "LastPayment"
+                                    }
+                                ]
+                            }
+                        ].concat($.map(data, function(item) {
+                            return {
+                                cells: [
+                                    { type: Number, value: item.Id },
+                                    { type: String, value: item.Name },
+                                    { type: String, value: item.Surname },
+                                    { type: String, value: item.UtilityName },
+                                    { type: Number, value: item.Arrear },
+                                    { type: String, value: item.LastPayment }
+                                ]
+                            };
+                        }))
+                    }
+                ]
+            }).saveAs({
+                fileName: "PrepBootstrapExcel"
+            });
+        });
+    });
+
+
 </script>
 </body>
 </html>
