@@ -18,7 +18,7 @@ routes.post("/", (req, res) => {
                 users.build({ firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email, password: hash , role: 2})
                 .save()
                 .then(user => {
-                    res.status(201).send({ status: "success" });
+                    res.status(201).send({ status: "success", userId: user.dataValues.id });
                 })
                 .catch(err => {
                     res.status(501).send({ status: "error", message: err.message });
@@ -32,7 +32,7 @@ routes.post("/", (req, res) => {
 routes.get("/:id", (req, res)=>{
     users.findOne({where: { id: req.params.id }})
         .then(result => {
-            res.send({
+            res.status(200).send({
                 name: result.firstName,
                 surname: result.lastName,
                 email: result.email,
@@ -51,7 +51,7 @@ routes.get("/", (req, res) => {
 
     users.findAndCountAll({ attributes: { exclude: 'password' }, limit: limit, offset: offset })
     .then(result => {
-        res.send(result.rows);
+        res.status(200).send(result.rows);
     })
     .catch(err => {
         res.status(500).send({ status: "error", message: "Server error" });

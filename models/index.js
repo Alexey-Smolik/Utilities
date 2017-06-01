@@ -5,7 +5,7 @@ var path      = require("path");
 var Sequelize = require("sequelize");
 var config = require('../config.json')["db"];
 var password = config.password ? config.password : "";
-var sequelize = new Sequelize(config.driver + "://" + config.username + ":" + password + "@" + config.host + ":" + config.port + "/" + config.dbname);
+var sequelize = new Sequelize(config.driver + "://" + config.username + ":" + password + "@" + config.host + ":" + config.port + "/" + config.dbname, {logging: false});
 var db = {};
 
 fs
@@ -37,8 +37,6 @@ db.Utility.hasOne(db.Payments);
 
 db.Payments.belongsTo(db.User);
 db.Payments.belongsTo(db.Utility);
-
-
 
 
 db.sequelize = sequelize;

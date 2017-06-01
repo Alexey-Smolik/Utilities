@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,10 @@
     "card-validator": "^4.1.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "jest": "^20.0.4",
     "jsonwebtoken": "^7.4.1",
     "mysql": "^2.13.0",
-    "sequelize": "^3.30.4"
+    "sequelize": "^3.30.4",
+    "supertest": "^3.0.0"
   }
 }

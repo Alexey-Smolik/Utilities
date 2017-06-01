@@ -13,11 +13,11 @@ routes.post("/", (req, res)=>{
         const time = new Date;
         payStatistics.build({ UtilityId: req.body.UtilityId, UserId: req.body.UserId, amount: req.body.amount, Date: time })
             .save()
-            .then(user => {
-                res.status(201).send({ status: "success" });
+            .then(result => {
+                res.status(201).send({ status: "success", payStatisticsId: result.dataValues.id });
             })
             .catch(err => {
-                res.status(501).send({ status: "error", message: "Server error" });
+                res.status(400).send({ status: "error", message: "Server error" });
             });
     }
 });
@@ -26,7 +26,7 @@ routes.post("/", (req, res)=>{
 routes.get("/", (req, res)=>{
     payStatistics.findAndCountAll({ include: [{model: utility}, {model: users}]})
         .then(result => {
-            res.send(
+            res.status(200).send(
                 result.rows.map(stat => {
                     return {
                         Id: stat.id,
@@ -47,7 +47,7 @@ routes.get("/", (req, res)=>{
 routes.get("/:id", (req, res)=>{
     payStatistics.findAndCountAll({where: { userId: req.params.id }, include: [{model: utility}, {model: users}]})
         .then(result => {
-            res.send(
+            res.status(200).send(
                 result.rows.map(stat => {
                     return {
                         payStatistics:{

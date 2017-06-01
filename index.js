@@ -13,3 +13,5 @@ app.use(cookieParser());
 app.use('/api', routes);
 
 models.sequelize.sync().then(app.listen(3000)).then(console.log("Server started!"));
+
+module.exports = app;

@@ -15,8 +15,8 @@ routes.post("/", (req, res)=>{
 
         Statistics.build({ arrear: arrear, lastPayment: lastPayment, UserId: req.body.UserId, UtilityId: req.body.UtilityId })
             .save()
-            .then(user => {
-                res.status(201).send({ status: "success" });
+            .then(result => {
+                res.status(201).send({ status: "success", statisticId: result.dataValues.id });
             })
             .catch(err => {
                 res.status(501).send({ status: "error", message: err.message });
@@ -28,7 +28,7 @@ routes.post("/", (req, res)=>{
 routes.get("/", (req, res)=>{
     Statistics.findAndCountAll({ include: [{model: utility}, {model: users}]})
         .then(result => {
-            res.send(
+            res.status(200).send(
                 result.rows.map(stat => {
                     var lastPayment
                     if(stat.lastPayment == null)

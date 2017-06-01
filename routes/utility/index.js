@@ -12,8 +12,8 @@ routes.post("/", (req, res)=>{
     else {
         utility.build({ name: req.body.name })
             .save()
-            .then(user => {
-                res.status(201).send({ status: "success" });
+            .then(result => {
+                res.status(201).send({ status: "success", utilityId: result.dataValues.id });
             })
             .catch(err => {
                 res.status(501).send({ status: "error", message: "Server error" });
@@ -28,7 +28,7 @@ routes.get("/", (req, res)=>{
 
     utility.findAndCountAll({ limit: limit, offset: offset })
         .then(result => {
-            res.send(result.rows.map(utility => { return {
+            res.status(200).send(result.rows.map(utility => { return {
                             id: utility.id,
                             name: utility.name
                     }
@@ -60,6 +60,9 @@ routes.delete("/:id", (req, res)=>{
 routes.put("/:id", (req, res)=>{
     if(!userHelper.checkRole(req.cookies))
         res.status(403).send({ status: "error", message: "You have no rights" });
+    else if (!req.body.name) {
+        res.status(400).send({status: "error", message: "Wrong params"});
+    }
     else{
         utility.update({name: req.body.name}, {where: {id: req.params.id}}).then(result=>{
             res.status(200).send({status: "success"});
