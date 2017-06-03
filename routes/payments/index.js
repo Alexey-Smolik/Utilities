@@ -5,7 +5,7 @@ const statistics = require('../../models').Statistics;
 const payStat = require('../../models').Payments;
 const utility = require('../../models').Utility;
 const users = require('../../models').User;
-var valid = require('card-validator');
+const valid = require('card-validator');
 
 const payHelper = require('../../helpers/payments.js');
 

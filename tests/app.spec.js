@@ -1,11 +1,11 @@
 'use strict'
-var app = require("../index");
+const app = require("../index");
 const request = require("supertest")(app);
 
 
 const cookies =
     ['token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNDk1MzgyNDYwfQ.GqwBkeyGLrur1OUDBgq0bR9y4fal08quxaIsBX2WDSc; role = 1'];
-var userId, utilityId, statisticId, payStatisticsId;
+let userId, utilityId, statisticId, payStatisticsId;
 
 
 describe('users api tests', () => {
@@ -21,8 +21,8 @@ describe('users api tests', () => {
                 })
         });
 
-        var wrongData = {firstName: "test1", lastName: "test1", email: "test1", password: "123"};
-        var addData = {firstName: "test1", lastName: "test1", email: "test1@test.com", password: "123"};
+        let wrongData = {firstName: "test1", lastName: "test1", email: "test1", password: "123"};
+        let addData = {firstName: "test1", lastName: "test1", email: "test1@test.com", password: "123"};
 
         it('should response with error if wrong data', () => {
             return request
@@ -64,7 +64,7 @@ describe('users api tests', () => {
 
 
     describe('PUT api/users', () => {
-        var updateData = {name: "test", surname: "test", email: "test@test.com", role: "2"};
+        let updateData = {name: "test", surname: "test", email: "test@test.com", role: "2"};
         it('should change user description', () => {
             return request
                 .put('/api/users/' + userId)
@@ -91,8 +91,8 @@ describe('users api tests', () => {
 
 
     describe('POST api/users/:id', () => {
-        var wrongRole = {role: "3"};
-        var role = {role: "1"};
+        let wrongRole = {role: "3"};
+        let role = {role: "1"};
 
         it('should response with error if role > 2 and < 1', () => {
             return request
@@ -147,7 +147,7 @@ describe('utilities api tests', () => {
                 })
         });
 
-        var utility = {name: "test"};
+        let utility = {name: "test"};
         it('should add new utility', () => {
             return request
                 .post('/api/utility')
@@ -185,7 +185,7 @@ describe('utilities api tests', () => {
                 })
         });
 
-        var updateUtility = {name: "test2"};
+        let updateUtility = {name: "test2"};
         it('should change utility name', () => {
             return request
                 .put('/api/utility/' + userId)
@@ -227,7 +227,7 @@ describe('statistics api tests', () => {
                 })
         });
 
-        var statistics = {UserId: 11, UtilityId: 1};
+        let statistics = {UserId: 11, UtilityId: 1};
         it('should add new statistics', () => {
             return request
                 .post('/api/statistics')
@@ -265,7 +265,7 @@ describe('statistics api tests', () => {
                 })
         });
 
-        var statistics = {arrear: 999};
+        let statistics = {arrear: 999};
         it('should add arrear', () => {
             return request
                 .put('/api/statistics/' + statisticId)
@@ -316,7 +316,7 @@ describe('payments api tests', () => {
                 })
         });
 
-        var wrongPayment = {amount: 1, cardNumber: 'x'};
+        let wrongPayment = {amount: 1, cardNumber: 'x'};
         it('should response with error if the card number is not correct', () => {
             return request
                 .put('/api/payments/12')
@@ -329,7 +329,7 @@ describe('payments api tests', () => {
                 })
         });
 
-        var payment = {amount: 1, cardNumber: 1};
+        let payment = {amount: 1, cardNumber: 1};
         it('should add payment', () => {
             return request
                 .put('/api/payments/12')
@@ -356,8 +356,8 @@ describe('payStatistics api tests', () => {
                 })
         });
 
-        var wrongPayStatistics = {UtilityId: 0, UserId: 0, amount: 1000};
-        var addPayStatistics = {UtilityId: 1, UserId: 11, amount: 999};
+        let wrongPayStatistics = {UtilityId: 0, UserId: 0, amount: 1000};
+        let addPayStatistics = {UtilityId: 1, UserId: 11, amount: 999};
 
         it('should response with error if wrong data', () => {
             return request
