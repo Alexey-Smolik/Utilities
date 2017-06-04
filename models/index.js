@@ -13,12 +13,7 @@ if(process.env.NODE_ENV == 'production'){
         logging: false,
         define: {
             timestamps: true,
-            paranoid: true,
-            defaultScope: {
-                where: {
-                    deletedAt: {$eq: null}
-                }
-            }
+            paranoid: true
         }
     };
     sequelize = new Sequelize(config.prod.name, config.prod.user, config.prod.password, options);
