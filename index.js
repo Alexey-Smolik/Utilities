@@ -12,9 +12,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/api', routes);
 
-/*models.sequelize.sync().then(()=>{
-    app.listen(3000)
-}).then(console.log("Server started!"));*/
+app.get('/', function(req, res){
+    res.redirect('/auth.html');
+});
 
 models.sequelize
     .sync()
