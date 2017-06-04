@@ -12,6 +12,15 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/api', routes);
 
-models.sequelize.sync().then(app.listen(3000)).then(console.log("Server started!"));
+/*models.sequelize.sync().then(()=>{
+    app.listen(3000)
+}).then(console.log("Server started!"));*/
+
+models.sequelize
+    .sync()
+    .then(() => {
+        app.listen(process.env.PORT || 3000, () => console.log("Server started!"));
+    })
+    .catch((err) => console.log(err));
 
 module.exports = app;

@@ -7,5 +7,12 @@
     "port": "3306",
     "dbname": "utilities"
   },
+  "prod": {
+    "host": "ec2-54-204-32-145.compute-1.amazonaws.com",
+    "name": "d3b5u5g5caru33",
+    "user": "lxguiplslldipu",
+    "password": "1370d5263d4ee2e27c19202158515e83fddf047ab9479c84f8fcfb5d6ceefe1c",
+    "dialect": "postgres"
+  },
   "secret_key": "superSecret"
 }

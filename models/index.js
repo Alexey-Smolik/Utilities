@@ -3,9 +3,29 @@
 var fs        = require("fs");
 var path      = require("path");
 var Sequelize = require("sequelize");
-var config = require('../config.json')["db"];
+var config = require('../config.json');
 var password = config.password ? config.password : "";
-var sequelize = new Sequelize(config.driver + "://" + config.username + ":" + password + "@" + config.host + ":" + config.port + "/" + config.dbname, {logging: false});
+var sequelize;
+if(process.env.NODE_ENV == 'production'){
+    const options = {
+        host: config.prod.host,
+        dialect: config.prod.dialect,
+        logging: false,
+        define: {
+            timestamps: true,
+            paranoid: true,
+            defaultScope: {
+                where: {
+                    deletedAt: {$eq: null}
+                }
+            }
+        }
+    };
+    sequelize = new Sequelize(config.prod.name, config.prod.user, config.prod.password, options);
+}
+else{
+    sequelize = new Sequelize(config.db.driver + "://" + config.db.username + ":" + password + "@" + config.db.host + ":" + config.db.port + "/" + config.db.dbname, {logging: false});
+}
 var db = {};
 
 fs
