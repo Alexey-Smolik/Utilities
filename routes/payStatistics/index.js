@@ -45,7 +45,7 @@ routes.get("/", (req, res)=>{
 });
 
 routes.get("/:id", (req, res)=>{
-    payStatistics.findAndCountAll({where: { userId: req.params.id }, include: [{model: utility}, {model: users}]})
+    payStatistics.findAndCountAll({where: { UserId: req.params.id }, include: [{model: utility}, {model: users}]})
         .then(result => {
             res.status(200).send(
                 result.rows.map(stat => {

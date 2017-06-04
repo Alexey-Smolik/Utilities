@@ -52,7 +52,7 @@ routes.get("/", (req, res)=>{
 });
 
 routes.get("/:id", (req, res)=>{
-    Statistics.findAndCountAll({where: { userId: req.params.id }, include: [{model: utility}, {model: users}]})
+    Statistics.findAndCountAll({where: { UserId: req.params.id }, include: [{model: utility}, {model: users}]})
         .then(result => {
             res.send(
                 result.rows.map(stat => {
