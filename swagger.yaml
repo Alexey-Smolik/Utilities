@@ -1,0 +1,395 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Utilities manager
+host: utilities-management.herokuapp.com
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+  - text/xml
+produces:
+  - application/json
+  - text/html
+paths:
+  /api/session/login:
+    post:
+      parameters:
+        - name: login
+          in: body
+          schema:
+            $ref: '#/definitions/Login'
+          required: true
+      responses:
+        400:
+          description: Wrong params
+        401:
+          description: Wrong email or wrong password
+        200:
+          description: User authorization
+  /api/session/logout:
+    post:
+      responses:
+        200:
+          description: Sign out of the account
+  /api/users:
+    get:
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get all users
+    post:
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/AddUser'
+          required: true
+      responses:
+        400:
+          description: Wrong params
+        409:
+          description: Crypt error
+        500:
+          description: Server error
+        200:
+          description: Add new user
+  /api/users/{userId}: 
+    get:
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "user id"
+          required: true
+          type: string
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get user by id
+    post:
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "user id"
+          required: true
+          type: string
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/Role'
+          required: true
+      responses:
+        403:
+          description: You have no rights
+        400:
+          description: Wrong params
+        500:
+          description: Server error
+        200:
+          description: Add new user
+    put:
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "user id"
+          required: true
+          type: string
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/ChangeUser'
+          required: true
+      responses:
+        403:
+          description: You have no rights
+        400:
+          description: Wrong params
+        500:
+          description: Server error
+        200:
+          description: Change user
+    delete:
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "user id"
+          required: true
+          type: string
+      responses:
+        403:
+          description: You have no rights
+        500:
+          description: Server error
+        200:
+          description: Delete user
+  /api/utility:
+    get:
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get all utilities
+    post:
+      parameters:
+        - name: utility
+          in: body
+          schema:
+            $ref: '#/definitions/Utility'
+          required: true
+      responses:
+        400:
+          description: Wrong params
+        401:
+          description: Wrong email or wrong password
+        200:
+          description: Add utility
+  /api/utility/{utilityId}:
+    put:
+      parameters:
+        - name: "utilityId"
+          in: "path"
+          description: "utility id"
+          required: true
+          type: string
+        - name: utility
+          in: body
+          schema:
+            $ref: '#/definitions/Utility'
+          required: true
+      responses:
+        403:
+          description: You have no rights
+        400:
+          description: Wrong params
+        500:
+          description: Server error
+        200:
+          description: Change utility
+    delete:
+      parameters:
+        - name: "utilityId"
+          in: "path"
+          description: "utility id"
+          required: true
+          type: string
+      responses:
+        403:
+          description: You have no rights
+        500:
+          description: Server error
+        200:
+          description: Delete utility
+  /api/statistics:
+    get:
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get all statistics
+    post:
+      parameters:
+        - name: statistic
+          in: body
+          schema:
+            $ref: '#/definitions/AddStat'
+          required: true
+      responses:
+        400:
+          description: Wrong params
+        501:
+          description: Server error
+        200:
+          description: Add statistic
+    put:
+      parameters:
+        - name: statistic
+          in: body
+          schema:
+            $ref: '#/definitions/Arrear'
+          required: true
+      responses:
+        403:
+          description: You have no rights
+        400:
+          description: Wrong params
+        500:
+          description: Server error
+        200:
+          description: Change arrear
+  /api/statistics/{statId}:
+    get:
+      parameters:
+        - name: "statId"
+          in: "path"
+          description: "statistic id"
+          required: true
+          type: string
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get statistic by id
+    delete:
+      parameters:
+        - name: "statId"
+          in: "path"
+          description: "statistic id"
+          required: true
+          type: string
+      responses:
+        403:
+          description: You have no rights
+        500:
+          description: Server error
+        200:
+          description: Delete statistic
+  /api/payments/{payId}:
+    put:
+      parameters:
+        - name: "payId"
+          in: "path"
+          description: "payment id"
+          required: true
+          type: string
+        - name: payment
+          in: body
+          schema:
+            $ref: '#/definitions/Amount'
+          required: true
+      responses:
+        403:
+          description: You have no rights or debt
+        400:
+          description: Wrong params or invalid card number
+        500:
+          description: Server error
+        200:
+          description: Make a payment
+  /api/payStatistic:
+    get:
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get all payment statistics
+    post:
+      parameters:
+        - name: payment statistic
+          in: body
+          schema:
+            $ref: '#/definitions/AddPayStat'
+          required: true
+      responses:
+        400:
+          description: Wrong params
+        501:
+          description: Server error
+        200:
+          description: Add statistic
+  /api/payStatistic/{payStatId}:
+    get:
+      parameters:
+        - name: "payStatId"
+          in: "path"
+          description: "payment statistic id"
+          required: true
+          type: string
+      responses:
+        500:
+          description: Server error
+        200:
+          description: Get payment statistic by id
+    delete:
+      parameters:
+        - name: "payStatId"
+          in: "path"
+          description: "payment statistic id"
+          required: true
+          type: string
+      responses:
+        403:
+          description: You have no rights
+        500:
+          description: Server error
+        200:
+          description: Delete statistic
+definitions:
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: integer
+        format: int32
+  AddUser:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: integer
+        format: int32
+  Utility:
+    type: object
+    properties:
+      name:
+        type: string
+  Role:
+    type: object
+    properties:
+      role:
+        type: integer
+        format: int32
+  ChangeUser:
+    type: object
+    properties:
+      name:
+        type: string
+      surname:
+        type: string
+      email:
+        type: string
+      role:
+        type: integer
+        format: int32
+  AddStat:
+    type: object
+    properties:
+      UserId:
+        type: integer
+        format: int32
+      UtilityId:
+        type: integer
+        format: int32
+  Arrear:
+    type: object
+    properties:
+      arrear:
+        type: integer
+        format: int32
+  Amount:
+    type: object
+    properties:
+      amount:
+        type: integer
+        format: int32
+  AddPayStat:
+    type: object
+    properties:
+      UserId:
+        type: integer
+        format: int32
+      UtilityId:
+        type: integer
+        format: int32
+      amount:
+        type: integer
+        format: int32
