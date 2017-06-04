@@ -63,7 +63,7 @@ routes.delete("/:id", (req, res)=>{
         res.status(403).send({ status: "error", message: "You have no rights" });
     else{
         payStatistics.destroy({where: { UserId:req.params.id }}).then(result=> {
-            statistics.destroy({where: { userId: req.params.id }}).then(result => {
+            statistics.destroy({where: { UserId: req.params.id }}).then(result => {
                 users.destroy({where: { id: req.params.id }}).then(result => {
                     res.status(200).send({status: "success"})
                 });
