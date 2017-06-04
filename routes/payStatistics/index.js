@@ -65,7 +65,7 @@ routes.get("/:id", (req, res)=>{
             );
         })
         .catch(err => {
-            res.status(500).send({ status: "error", message: "Server error" });
+            res.status(500).send({ status: "error", message: err.message });
         });
 });
 
