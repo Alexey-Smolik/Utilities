@@ -1,5 +1,4 @@
 "use strict"
-
 const routes = require('express').Router();
 const users = require('../../models').User;
 const bcrypt = require('bcryptjs');

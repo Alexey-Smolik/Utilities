@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <head>
+    <meta charset="utf-8">
     <title>U | User statistics</title>
     <link rel="stylesheet" href="statistics.css">
     <link rel="stylesheet" href="bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap-table.min.css">
     <link rel="stylesheet" href="jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="all.min.css" />
     <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
     <script src="bootstrap-table.min.js"></script>
     <script src="jquery.dataTables.min.js"></script>
+    <script src="packaged.min.js"></script>
     <script src="shieldui-all.min.js"></script>
     <script src="jszip.min.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-static-top">
@@ -27,12 +36,35 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">График</h4>
+            </div>
+            <div class="modal-body" id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Назад</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
    <div id="toolbar">
        <button id="remove" class="btn btn-primary" disabled>
            <span class="glyphicon glyphicon-usd"></span> Оплатить
        </button>
        <button id="exportButton" class="btn btn btn-success clearfix">
            <span class="glyphicon glyphicon-export"></span> Export to Excel
+       </button>
+       <button id="add" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
+           <span class="glyphicon glyphicon-plus"></span> График
        </button>
    </div>
 
@@ -53,6 +85,7 @@
    </div>
 
    <script>
+       var a;
        $(document).ready(function(){
            var id, role, query, table, statistics, user;
            role = localStorage.getItem('role');
@@ -66,6 +99,7 @@
                {
                },
                function (result) {
+                   a = result.map(item => item.statistics);
                    statistics = result.map(item => item.statistics);
                    $('#table').bootstrapTable({
                        data: statistics
@@ -168,6 +202,36 @@
            });
        });
 
+
+       $("#add").click(function () {
+           var data = [];
+           var obj = {};
+           for(i=0; i<a.length; i++){
+                data[i] = {
+                    name: a[i].utility,
+                    data: [a[i].arrear]
+                }
+           }
+           Highcharts.chart('container', {
+               chart: {
+                   renderTo: 'container',
+                   type: 'column'
+               },
+               title: {
+                   text: 'Statistics'
+               },
+               xAxis: {
+                   categories: ['Utility']
+               },
+               yAxis: {
+                   title: {
+                       text: 'Arrear'
+                   }
+               },
+               series: data
+           });
+
+       });
    </script>
 </body>
 </html>
