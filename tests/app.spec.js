@@ -77,7 +77,7 @@ describe('users api tests', () => {
         });
     });
 
-    describe('GET api/users/:id', () => {
+    /*describe('GET api/users/:id', () => {
         it('should show one user', () => {
             return request
                 .get('/api/users/' + userId)
@@ -87,7 +87,7 @@ describe('users api tests', () => {
                     expect(res.body).toBeDefined();
                 })
         });
-    });
+    });*/
 
 
     describe('POST api/users/:id', () => {
