@@ -36,7 +36,7 @@ describe('users api tests', () => {
                 })
         });
 
-        it('should add new user', () => {
+        /*it('should add new user', () => {
             return request
                 .post('/api/users')
                 .set('Cookie', cookies)
@@ -46,7 +46,7 @@ describe('users api tests', () => {
                     userId = res.body.userId;
                     expect(res.body.status).toBe('success');
                 })
-        });
+        });*/
     });
 
     describe('GET api/users', () => {
@@ -228,7 +228,7 @@ describe('statistics api tests', () => {
         });
 
         let statistics = {UserId: 11, UtilityId: 1};
-        it('should add new statistics', () => {
+        /*it('should add new statistics', () => {
             return request
                 .post('/api/statistics')
                 .set('Cookie', cookies)
@@ -238,7 +238,7 @@ describe('statistics api tests', () => {
                     statisticId = res.body.statisticId;
                     expect(res.body.status).toBe('success');
                 })
-        });
+        });*/
     });
 
     describe('GET api/statistics', () => {
@@ -330,7 +330,7 @@ describe('payments api tests', () => {
         });
 
         let payment = {amount: 1, cardNumber: 1};
-        it('should add payment', () => {
+        /*it('should add payment', () => {
             return request
                 .put('/api/payments/12')
                 .set('Cookie', cookies)
@@ -339,7 +339,7 @@ describe('payments api tests', () => {
                 .then(res => {
                     expect(res.body.status).toBe('success');
                 })
-        });
+        });*/
     });
 });
 
@@ -370,7 +370,7 @@ describe('payStatistics api tests', () => {
                 })
         });
 
-        it('should add new pay statistic', () => {
+        /*it('should add new pay statistic', () => {
             return request
                 .post('/api/payStatistic')
                 .set('Cookie', cookies)
@@ -380,8 +380,7 @@ describe('payStatistics api tests', () => {
                     payStatisticsId = res.body.payStatisticsId;
                     expect(res.body.status).toBe('success');
                 })
-        });
-
+        });*/
     });
 
     describe('GET api/payStatistics', () => {
