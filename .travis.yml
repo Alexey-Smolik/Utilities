@@ -4,7 +4,7 @@ node_js:
 services:
   - mysql
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS Utilities;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS utilities;'
 deploy:
   provider: heroku
   api_key:
