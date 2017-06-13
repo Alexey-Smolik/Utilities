@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "7"
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS Utilities;'
+deploy:
+  provider: heroku
+  api_key:
+    secure: "935c5650-95d5-4806-9954-99783c40a9e0"
+   app: Utilities
+notifications:
+  email:
+    recipients:
+      - smolikvtanke@gmail.com
+    on_success: never
+    on_failure: always
